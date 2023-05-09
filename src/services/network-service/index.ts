@@ -21,6 +21,12 @@ async function getNetworkById(networkId : number) {
     return sucess;
 }
 
+async function getAll() {
+    const result = await networkRepository.findNetwork();
+
+    return result;
+}
+
 async function removeNetwork(networkId : number) {
     const sucess = await networkRepository.deleteNetwork(networkId);
 
@@ -30,6 +36,7 @@ async function removeNetwork(networkId : number) {
 const networkService = {
     postNetwork,
     getNetworkById,
+    getAll,
     removeNetwork
 }
 

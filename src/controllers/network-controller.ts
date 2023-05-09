@@ -19,9 +19,14 @@ export async function newNetwork(req: AuthenticatedRequest, res: Response) {
 
 export async function searchNetwork(req: AuthenticatedRequest, res: Response) {
     const networkId = Number(req.query);
+    let network;
 
     try {
-        const network = await networkService.getNetworkById(networkId);
+        if(networkId) {
+            network = await networkService.getNetworkById(networkId);
+        };
+        
+        network = await networkService.getAll();
 
         return res.send(network).status(httpStatus.OK);
     } catch (error) {
@@ -30,7 +35,7 @@ export async function searchNetwork(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function forgetNetwork(req: AuthenticatedRequest, res: Response) {
-    const networkId = Number(req.query);
+    const networkId = Number(req.params);
 
     try {
         const network = await networkService.removeNetwork(networkId);

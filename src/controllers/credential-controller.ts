@@ -20,9 +20,15 @@ export async function newCredential(req: AuthenticatedRequest, res: Response) {
 
 export async function searchCredential(req: AuthenticatedRequest, res: Response) {
     const credentialId = Number(req.query);
+    let credential;
 
     try {
-        const credential = await credentialService.getCredentialById(credentialId);
+
+        if(credentialId) {
+            credential = await credentialService.getCredentialById(credentialId);
+        };
+        
+        credential = await credentialService.getAll();
 
         return res.send(credential).status(httpStatus.OK);
     } catch (error) {
@@ -31,7 +37,7 @@ export async function searchCredential(req: AuthenticatedRequest, res: Response)
 }
 
 export async function forgetCredential(req: AuthenticatedRequest, res: Response) {
-    const credentialId = Number(req.query);
+    const credentialId = Number(req.params);
 
     try {
         const credential = await credentialService.removeCredential(credentialId);

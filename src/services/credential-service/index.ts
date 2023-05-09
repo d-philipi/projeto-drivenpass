@@ -31,6 +31,12 @@ async function getCredentialById(credentialId : number) {
     return sucess;
 }
 
+async function getAll() {
+    const result = await credentialRepository.findCredential();
+
+    return result;
+}
+
 async function removeCredential(credentialId : number) {
     const sucess = await credentialRepository.deleteCredential(credentialId);
 
@@ -40,6 +46,7 @@ async function removeCredential(credentialId : number) {
 const credentialService = {
     postCredential,
     getCredentialById,
+    getAll,
     removeCredential
 }
 

@@ -23,6 +23,10 @@ async function findNetworkById(networkId : number) {
     })
 }
 
+async function findNetwork() {
+    return await prisma.network.findMany({})
+}
+
 async function deleteNetwork(networkId : number) {
     return await prisma.network.delete({
         where: {
@@ -35,6 +39,7 @@ const networkRepository = {
     createNetwork,
     findNetworkByTitle,
     findNetworkById,
+    findNetwork,
     deleteNetwork
 };
 
