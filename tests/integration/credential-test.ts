@@ -110,6 +110,68 @@ describe('POST /credential', () => {
     })
 });
 
-describe('GET /credential', () => {});
+describe('GET /credential', () => {
+    it('should respond with status 401 if no token is given', async () => {
+        const response = await server.post('/credential');
+    
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+    
+    it('should respond with status 401 if given token is not valid', async () => {
+        const token = faker.lorem.word();
+    
+        const response = await server.post('/credential').set('Authorization', `Bearer ${token}`);
+    
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+    
+    it('should respond with status 401 if there is no session for given token', async () => {
+        const userWithoutSession = await createUser();
+        const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
+    
+        const response = await server.post('/credential').set('Authorization', `Bearer ${token}`);
+    
+        expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+    });
+
+    describe('When token is valid', () => {
+        const generateValidBody = () => ({
+            title: faker.name.title(),
+            url: faker.internet.url(),
+            username: faker.internet.userName(),
+            password: faker.internet.password(10),
+        });
+
+        it('should respond with status 404 when user doesnt have a credential yet', async () => {
+            const user = await createUser();
+            const token = await generateValidToken(user);
+      
+            const response = await server.get('/credential').set('Authorization', `Bearer ${token}`);
+      
+            expect(response.status).toEqual(httpStatus.NOT_FOUND);
+        });
+
+        it('should respond with status 200 and with credential data', async () => {
+            const user = await createUser();
+            const token = await generateValidToken(user);
+            const credential = generateValidBody();
+      
+            const response = await server
+              .post('/credential')
+              .set('Authorization', `Bearer ${token}`)
+              .send({ ...credential });
+      
+            expect(response.status).toEqual(httpStatus.CREATED);
+            expect(response.body).toEqual({
+              id: expect.any(Number),
+              userId: user.id,
+              title: credential.title,
+              url: credential.url,
+              username: credential.username,
+              password: credential.password
+            });
+        });
+    })
+});
 
 describe('DELETE /credential', () => {});
