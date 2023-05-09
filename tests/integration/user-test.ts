@@ -32,7 +32,7 @@ describe('POST /users', () => {
     describe('when body is valid', () => {
         const generateValidBody = () => ({
             email: faker.internet.email(),
-            password: faker.internet.password(6),
+            password: faker.internet.password(10),
         });
 
         it('should respond with status 409 when there is an user with given email', async () => {
