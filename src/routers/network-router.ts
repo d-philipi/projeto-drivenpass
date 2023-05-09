@@ -1,13 +1,14 @@
 import { authenticateToken } from '@/middlewares/authentication-middleware';
 import { Router } from 'express';
 
+import { forgetNetwork, newNetwork, searchNetwork } from '@/controllers';
 
-const networkRouter = Router();
+const credentialRouter = Router();
 
-networkRouter
+credentialRouter
     .all('/*', authenticateToken)
-    .post('/',)
-    .get('/',)
-    .delete('/',)
+    .post('/', newNetwork)
+    .get('/:networkId', searchNetwork)
+    .delete('/:networkId', forgetNetwork)
 
-export { networkRouter };
+export { credentialRouter };
