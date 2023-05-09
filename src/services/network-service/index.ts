@@ -1,14 +1,16 @@
 import { Network } from "@/protocols";
 import networkRepository from "@/repositories/network-repository";
+import Cryptr from 'cryptr';
+
+const cryptr = new Cryptr('myTotallySecretKey');
 
 async function postNetwork(network:Network, userId : number) {
+
+    const hashedPassword = cryptr.encrypt(network.password)
+
+    network.password = hashedPassword;
+
     const sucess = await networkRepository.createNetwork(network,userId);
-
-    return sucess;
-}
-
-async function getNetworkByTitle(title : string) {
-    const sucess = await networkRepository.findNetworkByTitle(title);
 
     return sucess;
 }
@@ -27,7 +29,6 @@ async function removeNetwork(networkId : number) {
 
 const networkService = {
     postNetwork,
-    getNetworkByTitle,
     getNetworkById,
     removeNetwork
 }

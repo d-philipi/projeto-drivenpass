@@ -1,7 +1,19 @@
 import { Credential } from "@/protocols";
 import credentialRepository from "@/repositories/credential-repository";
+import { duplicatedTitleError } from "./errors";
+import Cryptr from 'cryptr';
+
+const cryptr = new Cryptr('myTotallySecretKey');
 
 async function postCredential(credential:Credential, userId : number) {
+    const titleExist = await getCredentialByTitle(credential.title);
+
+    if(titleExist) throw duplicatedTitleError;
+
+    const hashedPassword = cryptr.encrypt(credential.password)
+
+    credential.password = hashedPassword;
+
     const sucess = await credentialRepository.createCredential(credential,userId);
 
     return sucess;
@@ -27,7 +39,6 @@ async function removeCredential(credentialId : number) {
 
 const credentialService = {
     postCredential,
-    getCredentialByTitle,
     getCredentialById,
     removeCredential
 }
