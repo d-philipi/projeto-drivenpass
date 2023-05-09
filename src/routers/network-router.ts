@@ -10,7 +10,7 @@ const credentialRouter = Router();
 credentialRouter
     .all('/*', authenticateToken)
     .post('/', validateBody(networkSchema), newNetwork)
-    .get('/:networkId', searchNetwork)
+    .get('/', searchNetwork)
     .delete('/:networkId', forgetNetwork)
 
 export { credentialRouter };
